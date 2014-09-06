@@ -1,0 +1,24 @@
+commit ca6435d625b5f2604be075c55f5f8062e20ae3a8
+Author: KINGbabasula <kingbabasula@gmail.com>
+Date:   Sat Dec 14 15:50:17 2013 +0100
+
+    001
+    
+    Change-Id: I0816b4acaf032efa3e72074514be7e91b943d678
+
+diff --git a/vibrator/Android.mk b/vibrator/Android.mk
+index 6f7e262..8089429 100644
+--- a/vibrator/Android.mk
++++ b/vibrator/Android.mk
+@@ -1,9 +1,9 @@
+ # Copyright 2006 The Android Open Source Project
+ 
+-LOCAL_SRC_FILES += vibrator/vibrator.c
+-
+ ## Must point to a source file that implements the sendit() function
+ ifneq ($(BOARD_HAS_VIBRATOR_IMPLEMENTATION),)
+     LOCAL_SRC_FILES += $(BOARD_HAS_VIBRATOR_IMPLEMENTATION)
+     LOCAL_CFLAGS += -DUSE_ALTERNATIVE_VIBRATOR
++else
++    LOCAL_SRC_FILES += vibrator/vibrator.c
+ endif

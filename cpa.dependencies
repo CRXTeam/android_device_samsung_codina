@@ -1,0 +1,63 @@
+[
+  {
+    "remote": "github",
+    "revision": "cm-11.0",
+    "repository": "TeamCanjica/android_vendor_samsung_u8500-common",
+    "target_path": "vendor/samsung/u8500-common"
+  },
+  { "remote": "github",
+    "revision": "3.0.101",
+    "repository": "CRXTeam/kernel_samsung_u8500",
+    "target_path": "kernel/samsung"
+  },
+  { "remote": "github",
+    "revision": "cm-11.0",
+    "repository": "TeamCanjica/android_hardware_u8500",
+    "target_path": "hardware/u8500"
+  },
+  { "remote": "github",
+    "revision": "kitkat",
+    "repository": "CrystalAOKP/device_samsung_u8500-common",
+    "target_path": "device/samsung/u8500-common"
+  },
+  { "remote": "github",
+    "revision": "master",
+    "repository": "TeamCanjica/android_packages_apps_DeviceSettings",
+    "target_path": "packages/apps/DeviceSettings"
+  },
+  { "remote": "github",
+    "revision": "cm-11.0",
+    "repository": "CyanogenMod/android_packages_apps_SamsungServiceMode",
+    "target_path": "packages/apps/SamsungServiceMode"
+  },
+  { "remote": "github",
+    "revision": "cm-10.2",
+    "repository": "CyanogenMod/android_system_bluetooth",
+    "target_path": "system/bluetooth"
+  },
+  { "remote": "androidarmv6",
+    "revision": "cm-11.0",
+    "repository": "android_external_chromium",
+    "target_path": "external/chromium"
+  },
+  { "remote": "androidarmv6",
+    "revision": "cm-11.0",
+    "repository": "android_external_webkit",
+    "target_path": "external/webkit"
+  },
+  { "remote": "androidarmv6",
+    "revision": "cm-11.0",
+    "repository": "android_packages_apps_Browser",
+    "target_path": "packages/apps/Browser"
+  },
+  { "remote": "androidarmv6",
+    "revision": "cm-11.0",
+    "repository": "android_frameworks_webview",
+    "target_path": "frameworks/webview"
+  },
+  { "remote": "github",
+    "revision": "kitkat",
+    "repository": "CrystalAOKP/external_skia",
+    "target_path": "external/skia"
+  }
+]

@@ -3,7 +3,7 @@
 TARGET_OTA_ASSERT_DEVICE := codina,i8160,GT-I8160
 
 # Kernel
-TARGET_KERNEL_SOURCE := kernel/samsung/u8500
+TARGET_KERNEL_SOURCE := kernel/samsung
 TARGET_KERNEL_CONFIG := cyanogenmod_i8160_defconfig
 
 # Bluetooth

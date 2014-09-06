@@ -9,6 +9,10 @@ cd system/vold
 git fetch http://review.cyanogenmod.org/CyanogenMod/android_system_vold refs/changes/15/56515/2
 git cherry-pick FETCH_HEAD
 cd ../..
+cd art
+git fetch https://github.com/cernekee/android_art monitor-stack-v1
+git cherry-pick fc2ac71d0d9e147c607bff9371fe2ef25d8470af
+cd ..
 
 for i in $(find "$PATCHBASE"/* -type d); do
 	PATCHNAME=$(basename "$i")

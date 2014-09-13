@@ -7,7 +7,7 @@
   },
   { "remote": "github",
     "revision": "3.0.101",
-    "repository": "CRXTeam/kernel_samsung_u8500",
+    "repository": "TeamCanjica/Samsung_STE_Kernel",
     "target_path": "kernel/samsung"
   },
   { "remote": "github",

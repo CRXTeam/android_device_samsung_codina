@@ -1,3 +1,12 @@
+From b08474d9eff723317607a735ab5b1b8750d353fa Mon Sep 17 00:00:00 2001
+From: zodex <mimirower45@wp.pl>
+Date: Sun, 14 Sep 2014 20:39:10 +0200
+Subject: [PATCH] Patch for u8500
+
+---
+ core/jni/android_view_HardwareRenderer.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
 diff --git a/core/jni/android_view_HardwareRenderer.cpp b/core/jni/android_view_HardwareRenderer.cpp
 index 479fbe2..712e76b 100644
 --- a/core/jni/android_view_HardwareRenderer.cpp
@@ -14,4 +23,6 @@ index 479fbe2..712e76b 100644
      return systemTime(SYSTEM_TIME_MONOTONIC);
  }
  
+-- 
+1.8.3.2
 

@@ -1,10 +1,12 @@
-commit ca6435d625b5f2604be075c55f5f8062e20ae3a8
-Author: KINGbabasula <kingbabasula@gmail.com>
-Date:   Sat Dec 14 15:50:17 2013 +0100
+From 947220320169ef8c2c4da30d13f35fe01267c07e Mon Sep 17 00:00:00 2001
+From: zodex <mimirower45@wp.pl>
+Date: Sun, 14 Sep 2014 20:40:33 +0200
+Subject: [PATCH] Patch for u8500
 
-    001
-    
-    Change-Id: I0816b4acaf032efa3e72074514be7e91b943d678
+Change-Id: Ifd87ec4af2f9af1159771c72752b6495c722cb5c
+---
+ vibrator/Android.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/vibrator/Android.mk b/vibrator/Android.mk
 index 6f7e262..8089429 100644
@@ -22,3 +24,6 @@ index 6f7e262..8089429 100644
 +else
 +    LOCAL_SRC_FILES += vibrator/vibrator.c
  endif
+-- 
+1.8.3.2
+

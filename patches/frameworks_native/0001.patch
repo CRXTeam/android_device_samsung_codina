@@ -1,11 +1,35 @@
-commit 1d072b1900543beeb692cfa245b0c2b6dd84edbe
-Author: Robert Rozic <rooobertinhooo@gmail.com>
-Date:   Tue Jan 28 21:42:49 2014 +0100
+From f8d54a58a039bec578e06fe487aeee973a8d0df0 Mon Sep 17 00:00:00 2001
+From: zodex <mimirower45@wp.pl>
+Date: Sun, 14 Sep 2014 20:39:58 +0200
+Subject: [PATCH] Patch for u8500
 
-    STE OMX FIX
-    
-    Conflicts:
-    	include/binder/Parcel.h
+Change-Id: I18a97e53ba181728285f47596c9c95291816480c
+---
+ include/binder/MemoryBase.h                |   3 +
+ include/binder/Parcel.h                    |  29 ++----
+ include/gui/BufferQueue.h                  |   3 +
+ include/gui/ConsumerBase.h                 |   5 +-
+ include/gui/GLConsumer.h                   |  36 +++++++
+ include/gui/IGraphicBufferConsumer.h       |   3 +-
+ include/gui/IGraphicBufferProducer.h       |   3 +-
+ include/media/openmax/OMX_IVCommon.h       |   3 +
+ include/ui/Fence.h                         |   2 +-
+ include/ui/GraphicBuffer.h                 |  10 +-
+ include/ui/PixelFormat.h                   |   7 ++
+ include/ui/Region.h                        |  24 +++++
+ libs/binder/MemoryBase.cpp                 |  19 ++++
+ libs/binder/Parcel.cpp                     |  10 ++
+ libs/gui/Android.mk                        |   1 +
+ libs/gui/ConsumerBase.cpp                  |   2 +-
+ libs/gui/GLConsumer.cpp                    | 155 ++++++++++++++++++++++++++++-
+ libs/ui/PixelFormat.cpp                    |   4 +
+ opengl/include/EGL/eglext.h                |   2 +
+ opengl/libs/EGL/eglApi.cpp                 |   4 +
+ opengl/libs/EGL/egl_entries.in             |   2 +
+ services/surfaceflinger/DisplayDevice.cpp  |  18 +++-
+ services/surfaceflinger/DisplayDevice.h    |   2 +
+ services/surfaceflinger/SurfaceFlinger.cpp |   3 +
+ 24 files changed, 313 insertions(+), 37 deletions(-)
 
 diff --git a/include/binder/MemoryBase.h b/include/binder/MemoryBase.h
 index 463e26d..5bf104b 100644
@@ -671,6 +695,72 @@ index 6517c8c..6411a5e 100644
      case HAL_PIXEL_FORMAT_YCrCb_420_SP:
      case HAL_PIXEL_FORMAT_YV12:
          info->bitsPerPixel = 12;
+diff --git a/opengl/include/EGL/eglext.h b/opengl/include/EGL/eglext.h
+index 3b2984a..9736c5a 100644
+--- a/opengl/include/EGL/eglext.h
++++ b/opengl/include/EGL/eglext.h
+@@ -313,6 +313,7 @@ typedef EGLBoolean (EGLAPIENTRYP PFNEGLQUERYSURFACEPOINTERANGLEPROC) (EGLDisplay
+ #endif
+ 
+ #if KHRONOS_SUPPORT_INT64   /* EGLuint64NV requires 64-bit uint support */
++#ifndef STE_HARDWARE
+ #ifndef EGL_NV_system_time
+ #define EGL_NV_system_time 1
+ typedef khronos_utime_nanoseconds_t EGLuint64NV;
+@@ -324,6 +325,7 @@ typedef EGLuint64NV (EGLAPIENTRYP PFNEGLGETSYSTEMTIMEFREQUENCYNVPROC) (void);
+ typedef EGLuint64NV (EGLAPIENTRYP PFNEGLGETSYSTEMTIMENVPROC) (void);
+ #endif
+ #endif
++#endif
+ 
+ #if KHRONOS_SUPPORT_INT64 /* EGLuint64KHR requires 64-bit uint support */
+ #ifndef EGL_KHR_stream
+diff --git a/opengl/libs/EGL/eglApi.cpp b/opengl/libs/EGL/eglApi.cpp
+index a9dc7b3..33fa2e1 100644
+--- a/opengl/libs/EGL/eglApi.cpp
++++ b/opengl/libs/EGL/eglApi.cpp
+@@ -139,11 +139,13 @@ static const extention_map_t sExtensionMap[] = {
+     { "eglGetSyncAttribKHR",
+             (__eglMustCastToProperFunctionPointerType)&eglGetSyncAttribKHR },
+ 
++#ifndef STE_HARDWARE
+     // EGL_NV_system_time
+     { "eglGetSystemTimeFrequencyNV",
+             (__eglMustCastToProperFunctionPointerType)&eglGetSystemTimeFrequencyNV },
+     { "eglGetSystemTimeNV",
+             (__eglMustCastToProperFunctionPointerType)&eglGetSystemTimeNV },
++#endif
+ 
+     // EGL_KHR_wait_sync
+     { "eglWaitSyncKHR",
+@@ -1599,6 +1601,7 @@ EGLBoolean eglGpuPerfHintQCOM(EGLDisplay dpy, EGLContext ctx, EGLint *attrib_lis
+ // ----------------------------------------------------------------------------
+ // NVIDIA extensions
+ // ----------------------------------------------------------------------------
++#ifndef STE_HARDWARE
+ EGLuint64NV eglGetSystemTimeFrequencyNV()
+ {
+     clearError();
+@@ -1634,3 +1637,4 @@ EGLuint64NV eglGetSystemTimeNV()
+ 
+     return setErrorQuiet(EGL_BAD_DISPLAY, 0);
+ }
++#endif
+diff --git a/opengl/libs/EGL/egl_entries.in b/opengl/libs/EGL/egl_entries.in
+index aa92ea0..4d2de12 100644
+--- a/opengl/libs/EGL/egl_entries.in
++++ b/opengl/libs/EGL/egl_entries.in
+@@ -87,8 +87,10 @@ EGL_ENTRY(EGLBoolean, eglGpuPerfHintQCOM, EGLDisplay, EGLContext, EGLint *)
+ 
+ /* NVIDIA extensions */
+ 
++#ifndef STE_HARDWARE
+ EGL_ENTRY(EGLuint64NV, eglGetSystemTimeFrequencyNV, void)
+ EGL_ENTRY(EGLuint64NV, eglGetSystemTimeNV, void)
++#endif
+ 
+ /* IMG extensions */
+ 
 diff --git a/services/surfaceflinger/DisplayDevice.cpp b/services/surfaceflinger/DisplayDevice.cpp
 index 5f765bd..e0c86f8 100755
 --- a/services/surfaceflinger/DisplayDevice.cpp
@@ -735,10 +825,10 @@ index 40d92db..3c92dc3 100644
  
      EGLDisplay      mDisplay;
 diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
-index d26d3af..2995733 100644
+index 3c5c847..2ad2090 100644
 --- a/services/surfaceflinger/SurfaceFlinger.cpp
 +++ b/services/surfaceflinger/SurfaceFlinger.cpp
-@@ -3149,6 +3149,7 @@ class GraphicProducerWrapper : public BBinder, public MessageHandler {
+@@ -3162,6 +3162,7 @@ class GraphicProducerWrapper : public BBinder, public MessageHandler {
      uint32_t code;
      Parcel const* data;
      Parcel* reply;
@@ -746,7 +836,7 @@ index d26d3af..2995733 100644
  
      enum {
          MSG_API_CALL,
-@@ -3161,6 +3162,7 @@ class GraphicProducerWrapper : public BBinder, public MessageHandler {
+@@ -3174,6 +3175,7 @@ class GraphicProducerWrapper : public BBinder, public MessageHandler {
       */
      virtual status_t transact(uint32_t code,
              const Parcel& data, Parcel* reply, uint32_t flags) {
@@ -754,7 +844,7 @@ index d26d3af..2995733 100644
          this->code = code;
          this->data = &data;
          this->reply = reply;
-@@ -3173,6 +3175,7 @@ class GraphicProducerWrapper : public BBinder, public MessageHandler {
+@@ -3186,6 +3188,7 @@ class GraphicProducerWrapper : public BBinder, public MessageHandler {
              looper->sendMessage(this, Message(MSG_API_CALL));
              barrier.wait();
          }
@@ -762,3 +852,6 @@ index d26d3af..2995733 100644
          return NO_ERROR;
      }
  
+-- 
+1.8.3.2
+

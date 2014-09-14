@@ -1,11 +1,16 @@
-commit e493cd583069652483ad63e7c86234dedfc9d6f7
-Author: h3llrais3r <pooh_beer_1@hotmail.com>
-Date:   Wed Mar 19 21:53:08 2014 +0100
+From d3949d3d4bc0f62911bbf7e344a7eaa767cd8acc Mon Sep 17 00:00:00 2001
+From: zodex <mimirower45@wp.pl>
+Date: Sun, 14 Sep 2014 20:43:37 +0200
+Subject: [PATCH] Patch for u8500
 
-    Ported my low-incall volume fix from CM-10.2 to CM-11.0
+Change-Id: I548bd04a70cd797f4f1f9560dc6df8b8c6026c87
+---
+ src/com/android/phone/AudioRouter.java |  9 +++++++++
+ src/com/android/phone/PhoneUtils.java  | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
 diff --git a/src/com/android/phone/AudioRouter.java b/src/com/android/phone/AudioRouter.java
-index 3c8e9d3..de13889 100644
+index 3c8e9d3..9bb5f45 100644
 --- a/src/com/android/phone/AudioRouter.java
 +++ b/src/com/android/phone/AudioRouter.java
 @@ -179,7 +179,12 @@ import java.util.List;
@@ -33,14 +38,13 @@ index 3c8e9d3..de13889 100644
  
      /**
 diff --git a/src/com/android/phone/PhoneUtils.java b/src/com/android/phone/PhoneUtils.java
-index 2d44977..7df15e9 100644
+index 5feeaea..3d75f1e 100644
 --- a/src/com/android/phone/PhoneUtils.java
 +++ b/src/com/android/phone/PhoneUtils.java
-@@ -2027,6 +2027,38 @@ public class PhoneUtils {
-             }
+@@ -2256,6 +2256,38 @@ public class PhoneUtils {
          }
      }
-+
+ 
 +    /**
 +     * Reset the audio stream volume to fix the low in-call volume bug.
 +     *
@@ -72,6 +76,10 @@ index 2d44977..7df15e9 100644
 +        audioManager.setStreamVolume(streamType, lowerVolume, 0);
 +        audioManager.setStreamVolume(streamType, volume, 0);
 +    }
- 
++
      static boolean isInEmergencyCall(CallManager cm) {
          for (Connection cn : cm.getActiveFgCall().getConnections()) {
+             if (PhoneNumberUtils.isLocalEmergencyNumber(cn.getAddress(),
+-- 
+1.8.3.2
+

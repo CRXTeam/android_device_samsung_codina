@@ -9,16 +9,11 @@ cd system/vold
 git fetch http://review.cyanogenmod.org/CyanogenMod/android_system_vold refs/changes/15/56515/2
 git cherry-pick FETCH_HEAD
 cd ../..
-echo -e $CL_BLU"Cherrypicking Art fix"$CL_RST
+echo -e $CL_BLU"Cherrypicking ART compatibility fix with GCC 4.8"$CL_RST
 cd art
-git fetch https://github.com/cernekee/android_art monitor-stack-v1
-git cherry-pick fc2ac71d0d9e147c607bff9371fe2ef25d8470af
+git fetch https://github.com/JustArchi/android_art cm-11.0
+git cherry-pick 71a0ca3057cc3865bd8e41dcb94443998d028407
 cd ..
-echo -e $CL_BLU"Cherrypicking Low-InCall fix"$CL_RST
-cd packages/services/Telephony
-git fetch https://github.com/TeamCanjica/android_packages_services_Telephony cm-11.0
-git cherry-pick fdf281fdabe5e7517eb96f2faf159bbcc74ae4a6
-cd ../../..
 
 for i in $(find "$PATCHBASE"/* -type d); do
 	PATCHNAME=$(basename "$i")
@@ -29,5 +24,5 @@ for i in $(find "$PATCHBASE"/* -type d); do
 	done
 	echo applying $PATCHNAME to $PATCHTARGET
 	cd "$CMBASE/$PATCHTARGET" || exit 1
-	git apply "$PATCHBASE/$PATCHNAME"/* || exit 1
+	git am -3 "$PATCHBASE/$PATCHNAME"/* || exit 1
 done

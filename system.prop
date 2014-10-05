@@ -4,7 +4,7 @@
 rild.libargs=-d /dev/ttyS0
 rild.libpath=/system/lib/libsec-ril.so
 ro.telephony.call_ring.multiple=false
-ro.sf.lcd_density=200
+ro.sf.lcd_density=240
 ro.lcd_min_brightness=30
 ste.cam.back.orientation=90
 ste.cam.front.orientation=270

@@ -14,6 +14,11 @@ cd art
 git fetch https://github.com/JustArchi/android_art cm-11.0
 git cherry-pick 71a0ca3057cc3865bd8e41dcb94443998d028407
 cd ..
+cd frameworks/av
+git fetch https://github.com/TeamCanjica/android_frameworks_av cm-11.0
+echo -e $CL_BLU"Cherrypicking for android_frameworks_av - STE-OMX: fix getSupportedProfileLevel"$CL_RST
+git cherry-pick cfcb60d66b01783c274dc625bf32a44899d1e603
+cd ../..
 
 for i in $(find "$PATCHBASE"/* -type d); do
 	PATCHNAME=$(basename "$i")

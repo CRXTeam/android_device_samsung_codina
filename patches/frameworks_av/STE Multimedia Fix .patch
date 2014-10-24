@@ -1,9 +1,9 @@
-From dd9c9009a30cda63e2dd7b13ae1a3511df3aa7af Mon Sep 17 00:00:00 2001
-From: zodex <mimirower45@wp.pl>
-Date: Sun, 14 Sep 2014 20:38:37 +0200
-Subject: [PATCH] Patch for u8500
+From 5dbc819a4e35d22e2469eb5e39d58af184fe2d0d Mon Sep 17 00:00:00 2001
+From: Robert Rozic <rooobertinhooo@gmail.com>
+Date: Sun, 2 Feb 2014 12:38:11 +0100
+Subject: [PATCH] STE Multimedia Fix [1/4]
 
-Change-Id: I0efd34a267dd1c785de8357c23ae0def0f11d5d4
+08/05/2014 diego-ch: remove vc-1 as cm team now added it to the default codec list
 ---
  camera/CameraParameters.cpp                        |  21 +++
  include/camera/CameraParameters.h                  |  21 +++
@@ -18,10 +18,10 @@ Change-Id: I0efd34a267dd1c785de8357c23ae0def0f11d5d4
  10 files changed, 271 insertions(+)
 
 diff --git a/camera/CameraParameters.cpp b/camera/CameraParameters.cpp
-index 77eb5b8..44098f5 100644
+index 09e0e93..8b06b8d 100644
 --- a/camera/CameraParameters.cpp
 +++ b/camera/CameraParameters.cpp
-@@ -341,6 +341,13 @@ const char CameraParameters::SCENE_MODE_FIREWORKS[] = "fireworks";
+@@ -328,6 +328,13 @@ const char CameraParameters::SCENE_MODE_FIREWORKS[] = "fireworks";
  const char CameraParameters::SCENE_MODE_SPORTS[] = "sports";
  const char CameraParameters::SCENE_MODE_PARTY[] = "party";
  const char CameraParameters::SCENE_MODE_CANDLELIGHT[] = "candlelight";
@@ -35,7 +35,7 @@ index 77eb5b8..44098f5 100644
  #ifdef QCOM_HARDWARE
  #ifdef SAMSUNG_CAMERA_LEGACY
  const char CameraParameters::SCENE_MODE_BACKLIGHT[] = "back-light";
-@@ -367,6 +374,14 @@ const char CameraParameters::PIXEL_FORMAT_YUV420SP[] = "yuv420sp";
+@@ -354,6 +361,14 @@ const char CameraParameters::PIXEL_FORMAT_YUV420SP[] = "yuv420sp";
  #ifdef QCOM_HARDWARE
  const char CameraParameters::PIXEL_FORMAT_YUV420SP_ADRENO[] = "yuv420sp-adreno";
  #endif
@@ -50,7 +50,7 @@ index 77eb5b8..44098f5 100644
  const char CameraParameters::PIXEL_FORMAT_YUV422I[] = "yuv422i-yuyv";
  const char CameraParameters::PIXEL_FORMAT_YUV420P[]  = "yuv420p";
  const char CameraParameters::PIXEL_FORMAT_RGB565[] = "rgb565";
-@@ -531,6 +546,12 @@ void CameraParameters::setOrientation(int orientation)
+@@ -518,6 +533,12 @@ void CameraParameters::setOrientation(int orientation)
  const char CameraParameters::LIGHTFX_LOWLIGHT[] = "low-light";
  const char CameraParameters::LIGHTFX_HDR[] = "high-dynamic-range";
  
@@ -64,10 +64,10 @@ index 77eb5b8..44098f5 100644
                  : mMap()
  {
 diff --git a/include/camera/CameraParameters.h b/include/camera/CameraParameters.h
-index 1280ea8..ebf178a 100644
+index 4a5ec8f..58be4a0 100644
 --- a/include/camera/CameraParameters.h
 +++ b/include/camera/CameraParameters.h
-@@ -856,6 +856,13 @@ public:
+@@ -843,6 +843,13 @@ public:
      static const char SCENE_MODE_SPORTS[];
      static const char SCENE_MODE_PARTY[];
      static const char SCENE_MODE_CANDLELIGHT[];
@@ -81,7 +81,7 @@ index 1280ea8..ebf178a 100644
  #ifdef QCOM_HARDWARE
      static const char SCENE_MODE_BACKLIGHT[];
      static const char SCENE_MODE_FLOWERS[];
-@@ -880,6 +887,14 @@ public:
+@@ -867,6 +874,14 @@ public:
  #ifdef QCOM_HARDWARE
      static const char PIXEL_FORMAT_YUV420SP_ADRENO[]; // ADRENO
  #endif
@@ -96,7 +96,7 @@ index 1280ea8..ebf178a 100644
      static const char PIXEL_FORMAT_YUV422I[]; // YUY2
      static const char PIXEL_FORMAT_YUV420P[]; // YV12
      static const char PIXEL_FORMAT_RGB565[];
-@@ -1082,6 +1097,12 @@ public:
+@@ -1069,6 +1084,12 @@ public:
      void getSupportedHfrSizes(Vector<Size> &sizes) const;
  #endif
  
@@ -110,21 +110,21 @@ index 1280ea8..ebf178a 100644
      DefaultKeyedVector<String8,String8>    mMap;
  };
 diff --git a/include/media/stagefright/ColorConverter.h b/include/media/stagefright/ColorConverter.h
-index 85ba920..014fc7a 100644
+index 85ba920..e34791c 100644
 --- a/include/media/stagefright/ColorConverter.h
 +++ b/include/media/stagefright/ColorConverter.h
-@@ -73,6 +73,11 @@ private:
+@@ -72,6 +72,11 @@ private:
+ 
      status_t convertQCOMYUV420SemiPlanar(
              const BitmapParams &src, const BitmapParams &dst);
- 
++			
 +#ifdef STE_HARDWARE
 +    status_t convertSTEYUV420PackedSemiPlanarMB(
 +            const BitmapParams &src, const BitmapParams &dst);
 +#endif
-+
+ 
      status_t convertYUV420SemiPlanar(
              const BitmapParams &src, const BitmapParams &dst);
- 
 diff --git a/include/media/stagefright/MediaDefs.h b/include/media/stagefright/MediaDefs.h
 index 312e6e2..bd5d005 100644
 --- a/include/media/stagefright/MediaDefs.h
@@ -165,10 +165,10 @@ index b392042..ba8c7b0 100644
  
      struct CodecNameAndQuirks {
 diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
-index a3d54a4..0115475 100755
+index 340c873..5a06c10 100755
 --- a/media/libstagefright/ACodec.cpp
 +++ b/media/libstagefright/ACodec.cpp
-@@ -602,8 +602,12 @@ status_t ACodec::configureOutputBuffersFromNativeWindow(
+@@ -606,8 +606,12 @@ status_t ACodec::configureOutputBuffersFromNativeWindow(
              mNativeWindow.get(),
              def.format.video.nFrameWidth,
              def.format.video.nFrameHeight,
@@ -236,7 +236,7 @@ index e99de61..0789caa 100644
  const char *MEDIA_MIMETYPE_VIDEO_RAW = "video/raw";
  
 diff --git a/media/libstagefright/OMXCodec.cpp b/media/libstagefright/OMXCodec.cpp
-index a75c8f9..36bcbc2 100644
+index 8d24187..27240b9 100644
 --- a/media/libstagefright/OMXCodec.cpp
 +++ b/media/libstagefright/OMXCodec.cpp
 @@ -275,6 +275,20 @@ static int CompareSoftwareCodecsFirst(
@@ -508,5 +508,5 @@ index 597167f..a85ad72 100644
      static const signed kClipMin = -278;
      static const signed kClipMax = 535;
 -- 
-1.8.3.2
+1.9.1
 

@@ -1,0 +1,34 @@
+From 3dba426da410fadcd757eaa131166e534afbd1a9 Mon Sep 17 00:00:00 2001
+From: Diego Porto <diego.cfporto@gmail.com>
+Date: Tue, 14 Oct 2014 02:40:21 -0300
+Subject: [PATCH] merge @Meticulus video streaming fix
+
+more info: https://github.com/Meticulus/android_device_samsung_codinalte/commit/d6952e1d4805ce7f6a58eecba64373f5f032a73f
+           http://forum.xda-developers.com/showpost.php?p=55947910&postcount=169
+---
+ media/libstagefright/ACodec.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index 0115475..5a06c10 100755
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -488,11 +488,15 @@ status_t ACodec::allocateBuffersOnPort(OMX_U32 portIndex) {
+ 
+     status_t err;
+     if (mNativeWindow != NULL && portIndex == kPortIndexOutput) {
++#ifdef STE_HARDWARE
++	err = allocateOutputBuffersFromNativeWindow();
++#else
+         if (mStoreMetaDataInOutputBuffers) {
+             err = allocateOutputMetaDataBuffers();
+         } else {
+             err = allocateOutputBuffersFromNativeWindow();
+         }
++#endif
+     } else {
+         OMX_PARAM_PORTDEFINITIONTYPE def;
+         InitOMXParams(&def);
+-- 
+1.9.1
+

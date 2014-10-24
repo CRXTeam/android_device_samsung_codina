@@ -24,6 +24,10 @@ PRODUCT_COPY_FILES += \
 # Audio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/adm.sqlite-u8500:system/etc/adm.sqlite-u8500
+    
+# Radio and Telephony
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.call_recording.enabled=1
 
 # GPS
 PRODUCT_COPY_FILES += \
